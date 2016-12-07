@@ -4,8 +4,8 @@ html, body {
     width: 100%;
 }
 
-.container {
-    margin: 20px auto;
+.container-slim {
+    max-width: 80rem;
 }
 
 .log {

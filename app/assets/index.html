@@ -19,30 +19,42 @@
 </head>
 
 <body>
-  <div class="container">
+  <div class="container container-slim">
     <h4>Transaction consistency in a distributed database environment</h4>
     <p>by <a href="https://github.com/rafaelkallis" target="_blank">Rafael Kallis</a>, <a href="https://github.com/alpox" target="_blank">Elias Bernhaut</a></p>
-    <h5>Problem Definition</h5>
+    <h5>Table of Properties</h5>
+
+    <ul>
+      <li><a href="#problem">Problem Definition</a></li>
+      <li><a href="#2pc">Two Phase Commit</a></li>
+      <li><a href="#simulation">Simulation</a></li>
+      <li><a href="#formalisation">Formalisation of the problem</a></li>
+    </ul>
+
+    <h5 id="problem">Problem Definition</h5>
     <p>Unlike a transaction on a local database, a distributed transaction involves altering data on multiple databases. Consequently,
       distributed transaction processing is more complicated, because the database must coordinate the committing or aborting
       the changes in a transaction as a self-contained unit. In other words, the entire transaction commits, or the entire
       transaction aborts.</p>
-    <h5>Two Phase Commit Protocol</h5>
+    <h5 id="2pc">Two Phase Commit Protocol</h5>
     <p>The database ensures the integrity of data in a distributed transaction using the two-phase commit mechanism. In the
       prepare phase, the coordinator in the transaction asks the subordinates to promise to commit or abort the transaction.
       If all subordinates are able to commit the transaction, the transaction stages in the commit phase, otherwise it stages
       in the abort phase. During the commit phase, the coordinator asks all subordinates to commit the transaction. During
       the abort phase, all subordinates are asked to abort. You can view an illustration of the protocol below.</p>
-
-    <div class="row">
-      <div class="column column-50">
-        <img src="./protocol.svg">
-      </div>
-      <div class="column column-50">
+  </div>
+  <div class="container">
+    <div class="row" style="margin: 50px 0 10px 0;">
+      <div class="column column-50 column-offset-25" style="text-align: center;">
+        <div class="box">
+          <img src="./protocol.svg">
+        </div>
         <p>Figure 1: Two phase commit protocol diagram, note that an * next to the record type means that the record is forced
           to stable storage.</p>
       </div>
     </div>
+  </div>
+  <div class="container container-slim">
 
 
     <p>We assume that each tranaction runs through a different instance of the state charts below. When the transaction starts,
@@ -53,19 +65,29 @@
       with an ack message. If a timeout occurres while waiting, the coordinator retransmitts the commit (abort) message to
       the respective subordinate. The transaction ends when all subordinates have responded with an ack message to the coordinator's
       commit (abort) message.</p>
-
-    <div class="row">
+  </div>
+  <div class="container">
+    <div class="row" style="text-align: center;">
       <div class="column column-50">
+        <div class="box">
+          <img src="./coordinator.svg">
+        </div>
         <p>Figure 2: Coordinator state chart</p>
-        <img src="./coordinator.svg">
       </div>
       <div class="column column-50">
+        <div class="box">
+          <img src="./subordinate.svg">
+        </div>
         <p>Figure 3: Subordinate state chart</p>
-        <img src="./subordinate.svg">
       </div>
     </div>
+  </div>
+  <div class="container container-slim">
 
-    <h5>Simulation</h5>
+    <h5 id="simulation">Simulation</h5>
+    <p>
+      Below you can have some hands-on experience on the two phase commit protocol. The simulation shows you that it is impossible not to reach a consistent state. You can start a transaction by pressing <code>enter</code> or <code>return</code> depending on your machine. On the top left, you can see what's going on with the coordinator. On the top right, you have an overview of the statuses from your transactions. On the middle row you have an overview of your 3 subordinates. It is also possible to inject some bugs. You can do so by selecting the appropriate bug from the panel below the subordinates. Note that if selecting a bug that is injected on a subordinate, there's a slight chance that the bug won't be injected succesfully, since the bugs are injected uniformly among the subordinates. You can also crash a node by clicking on the coordinator's or the subordinates' label. 
+    </p>
     <div class="container">
       <div class="row">
         <div class="column column-50">
@@ -178,11 +200,11 @@
       </div>
     </div>
 
-    <h5>Formalisation of the problem</h5>
+    <h5 id="formalisation">Formalisation of the problem</h5>
     <p>
       <div>
         Let
-        <katex>N = \{ 0, 1, ..., n \}</katex> denote the set of all nodes, which includes the coordinator and all subordinates.
+        <katex>N = \{ 0, 1, ..., n \}</katex> denote the set of nodes, which includes the coordinator and all subordinates.
       </div>
       <div>
         Let
@@ -190,11 +212,11 @@
       </div>
       <div>
         Let
-        <katex>n_i \in N, i \ne 0</katex> denote all subordinates.
+        <katex>n_i\in N, \quad i \ne 0</katex> denote any subordinate.
       </div>
       <div>
         Let
-        <katex>T = \{ 0, ... , m \}</katex> denote the set of all transactions.
+        <katex>T = \{ 0, ... , m \}</katex> denote the set of transactions.
       </div>
       <div>Let
         <katex>t \in T</katex> denote a transaction.
@@ -206,7 +228,7 @@
       </div>
       <div>
         Let
-        <katex>f : N \times T \rightarrow S</katex> denote the function which maps to a state, given a node and a transaction.
+        <katex>f : N \times T \rightarrow S</katex> denote the function which maps any node and transaction to a state.
       </div>
       <div>
         In order to reach a consistent state, following condition must be satisfied:
@@ -297,7 +319,7 @@
           <katex>\small i \ne j, \quad i,j \ne 0</katex> (both
           <katex>n_i,n_j</katex> are subordinates)</p>
 
-        <p>As shown in (3), if
+        <p>As shown in (1), if
           <katex>\footnotesize f(n_i,t)=Commit \Rightarrow f(n_0, t)</katex>, and as shown in (3) if
           <katex>\footnotesize f(n_0,t)=Commit \Rightarrow f(n_j,t)</katex>. Intuitively this means that WLOG if subordinate
           <katex>n_i</katex> is in commit state, the coordinator also must be in commit state and thus subordinate
@@ -343,8 +365,8 @@
           <katex>\small i \ne j, \quad i,j \ne 0</katex> (both
           <katex>n_i,n_j</katex> are subordinates)</p>
 
-        <p>As shown in (4), if
-          <katex>\footnotesize f(n_i,t)=Abort \Rightarrow f(n_0, t)</katex>, and as shown in (2) if
+        <p>As shown in (2), if
+          <katex>\footnotesize f(n_i,t)=Abort \Rightarrow f(n_0, t)</katex>, and as shown in (4) if
           <katex>\footnotesize f(n_0,t)=Abort \Rightarrow f(n_j,t)</katex>. Intuitively this means that WLOG if subordinate
           <katex>n_i</katex> is in abort state, the coordinator also must be in abort state and thus subordinate
           <katex>n_j</katex> also must be in abort state. Thus
@@ -361,9 +383,9 @@
       </p>
       <p><strong>Proof:</strong> As shown in (5) and (6), if any node is in commit (abort) state, then any other node must be
         in commit (abort) state. Thus</p>
-        <div style="text-align: center">
-      <katex>\large f(n_i,t)=f(n_j,t),\quad \forall i,j</katex>
-        </div>
+      <div style="text-align: center">
+        <katex>\large f(n_i,t)=f(n_j,t),\quad \forall i,j</katex>
+      </div>
       <div style="text-align: right;">
         <katex>\square</katex>
       </div>

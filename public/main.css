@@ -4,6 +4,10 @@ html, body {
     width: 100%;
 }
 
+.space-up {
+    margin-top: 50px;
+}
+
 .container-slim {
     max-width: 80rem;
 }

@@ -77,10 +77,11 @@ h5 {
 .box {
     margin: 10px 0;
     padding: 10px;
-    background-color: #f0f0f0;
+    background-color: white;
     border-style: solid;
     border-width: 1px;
     border-radius: 6px;
+    border-color: lightgrey;
 }
 
 .explosion {

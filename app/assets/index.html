@@ -27,8 +27,10 @@
           <ul>
             <li><a href="#problem">Problem Definition</a></li>
             <li><a href="#2pc">Two Phase Commit</a></li>
-            <li><a href="#simulation">Simulation</a></li>
+            <li><a href="#example">Running example</a></li>
             <li><a href="#formalisation">Formalisation of the problem</a></li>
+            <li><a href="#simulations">Simulations</a></li>
+            <li><a href="#observations">Observations</a></li>
           </ul>
           <h5 id="problem">Problem Definition</h5>
           <p>Unlike a transaction on a local database, a distributed transaction involves altering data on multiple databases.
@@ -79,7 +81,7 @@
     <div class="row">
       <div class="column">
         <div class="slim">
-          <h5 id="simulation">Simulation</h5>
+          <h5 id="example">Running example</h5>
           <p>
             Below you can have some hands-on experience on the two phase commit protocol. The simulation shows you that it is impossible
             not to reach a consistent state. You can start a transaction by pressing <code>enter</code> or <code>return</code>            depending on your machine. On the top left, you can see what's going on with the coordinator. On the top right,
@@ -203,186 +205,387 @@
     </div>
     <div class="row">
       <div class="column">
-        <h5 id="formalisation">Formalisation of the problem</h5>
-        <div>
-          Let
-          <span class="katex">\footnotesize N = \{ 0, 1, ..., n \}</span> denote the set of nodes, which includes the coordinator
-          and all subordinates.
-        </div>
-        <div>
-          Let
-          <span class="katex">\footnotesize n_0 \in N</span> denote the coordinator.
-        </div>
-        <div>
-          Let
-          <span class="katex">\footnotesize n_i\in N, \quad i \ne 0</span> denote any subordinate.
-        </div>
-        <div>
-          Let
-          <span class="katex">\footnotesize T = \{ 0, ... , m \}</span> denote the set of transactions.
-        </div>
-        <div>Let
-          <span class="katex">\footnotesize t \in T</span> denote a transaction.
-        </div>
-        <div>
-          Let
-          <span class="katex">\footnotesize S = \{ Commit, Abort \}</span> denote the set of possible states. Note that the
-          states used here are independent from the states used in the state charts above.
-        </div>
-        <div>
-          Let
-          <span class="katex">\footnotesize f : N \times T \rightarrow S</span> denote the function which maps any node and
-          transaction to a state.
-        </div>
-        <div>
-          In order to reach a consistent state, following condition must be satisfied:
-          <div style="text-align: center; margin-top: 20px;">
-            <span class="katex">\large f(n_i,t) = f(n_j,t), \quad \forall i,j</span>
+        <div class="slim">
+          <h5 id="formalisation">Formalisation of the problem</h5>
+          <div>
+            Let
+            <span class="katex">\footnotesize N = \{ 0, 1, ..., n \}</span> denote the set of nodes, which includes the coordinator
+            and all subordinates.
           </div>
-        </div>
-        <blockquote>
-          <p><strong>(Theorem 1)</strong>
-            <span class="katex">\footnotesize f(n_i,t)=Commit \Rightarrow f(n_0,t)=Commit, i\ne 0</span> (If a subordinate
-            is in commit state, the coordinator must also be in commit state)
-          </p>
-          <p><strong>Proof:</strong> In order for subordinate
-            <span class="katex">\footnotesize n_i</span> to be in commit state, the coordinator
-            <span class="katex">\footnotesize n_0</span> must have entered the commit state before
-            <span class="katex">\footnotesize n_i</span> and then sent a commit message to
-            <span class="katex">\footnotesize n_i</span>. It is impossible for the coordinator to send a commit message,
-            if he is not in the commit state.</p>
-        </blockquote>
-        <blockquote>
-          <p><strong>(Theorem 2)</strong>
-            <span class="katex">\footnotesize f(n_i,t)=Abort \Rightarrow f(n_0,t)=Abort, i\ne 0</span> (If a subordinate
-            is in abort state, the coordinator must also be in abort state)
-          </p>
-          <p><strong>Proof:</strong> (Analogus to 1) In order for subordinate
-            <span class="katex">\footnotesize n_i</span> to be in abort state, the coordinator
-            <span class="katex">\footnotesize n_0</span> must have entered the abort state before
-            <span class="katex">\footnotesize n_i</span> and then sent an abort message to
-            <span class="katex">\footnotesize n_i</span>. It is impossible for the coordinator to send an abort message,
-            if he is not in the abort state.</p>
-        </blockquote>
-        <blockquote>
-          <p><strong>(Theorem 3)</strong>
-            <span class="katex">\footnotesize f(n_0,t)=Commit \Rightarrow f(n_i,t)=Commit, i \ne 0</span> (If the coordinator
-            is in commit state, all subordinates must also be in commit state)
-          </p>
-          <p><strong>Proof:</strong> If the coordinator
-            <span class="katex">\footnotesize n_0</span> enters commit state, he must send commit messages to all subordinates
-            <span class="katex">\footnotesize n_i</span>. All subordinates must respond to the commit message with an ack
-            message. If the coordinator doesn't receive an ack message from a subordinate after a fixed timeout, the coordinator
-            retransmitts the commit message. It is impossible for the coordinator to send any other message than the commit
-            message in the commit phase. Eventually all subordinates will receive the commit message, thus every subordinate
-            <span class="katex">\footnotesize n_i</span> must be in commit state.</p>
-        </blockquote>
-        <blockquote>
-          <p><strong>(Theorem 4)</strong>
-            <span class="katex">\footnotesize f(n_0,t)=Abort \Rightarrow f(n_i,t)=Abort, i \ne 0</span> (If the coordinator
-            is in abort state, all subordinates must also be in abort state)
-          </p>
-          <p><strong>Proof:</strong> (Analogus to 3) If the coordinator
-            <span class="katex">\footnotesize n_0</span> enters abort state, he must send abort messages to all subordinates
-            <span class="katex">\footnotesize n_i</span>. All subordinates must respond to the abort message with an ack
-            message. If the coordinator doesn't receive an ack message from a subordinate after a fixed timeout, the coordinator
-            retransmitts the abort message. It is impossible for the coordinator to send any other message than the abort
-            message in the abort phase. Eventually all subordinates will receive the abort message, thus every subordinate
-            <span class="katex">\footnotesize n_i</span> must be in abort state.</p>
-        </blockquote>
-        <blockquote>
-          <p><strong>(Theorem 5)</strong>
-            <span class="katex">\footnotesize f(n_i,t)=Commit \Leftrightarrow f(n_j,t)=Commit</span> (If one node is in commit
-            state, then all other nodes must also be in commit state)
-          </p>
-          <p><strong>Proof:</strong> We consider 3 possible cases:</p>
-          <p><strong>Case 1:</strong>
-            <span class="katex">\footnotesize i \ne j = 0</span> (
-            <span class="katex">\footnotesize n_i</span> is subordinate,
-            <span class="katex">\footnotesize n_j</span> is coordinator)</p>
-          <p>As shown in (1), if
-            <span class="katex">\scriptsize f(n_i,t)=Commit \Rightarrow f(n_j,t)=Commit</span>, and as shown in (3) if
-            <span class="katex">\scriptsize f(n_j,t)=Commit \Rightarrow f(n_i,t)=Commit</span>, thus
-            <span class="katex">\scriptsize f(n_i,t)=Commit \Leftrightarrow f(n_j,t)=Commit</span>, for
-            <span class="katex">\scriptsize i \ne j = 0</span>.
-            <p><strong>Case 2:</strong>
-              <span class="katex">\footnotesize j \ne i = 0</span> (
-              <span class="katex">\footnotesize n_i</span> is coordinator,
-              <span class="katex">\footnotesize n_j</span> is subordinate)</p>
+          <div>
+            Let
+            <span class="katex">\footnotesize n_0 \in N</span> denote the coordinator.
+          </div>
+          <div>
+            Let
+            <span class="katex">\footnotesize n_i\in N, \quad i \ne 0</span> denote any subordinate.
+          </div>
+          <div>
+            Let
+            <span class="katex">\footnotesize T = \{ 0, ... , m \}</span> denote the set of transactions.
+          </div>
+          <div>Let
+            <span class="katex">\footnotesize t \in T</span> denote a transaction.
+          </div>
+          <div>
+            Let
+            <span class="katex">\footnotesize S = \{ Commit, Abort \}</span> denote the set of possible states. Note that
+            the states used here are independent from the states used in the state charts above.
+          </div>
+          <div>
+            Let
+            <span class="katex">\footnotesize f : N \times T \rightarrow S</span> denote the function which maps any node
+            and transaction to a state.
+          </div>
+          <div>
+            In order to reach a consistent state, following condition must be satisfied:
+            <div style="text-align: center; margin-top: 20px;">
+              <span class="katex">\large f(n_i,t) = f(n_j,t), \quad \forall i,j</span>
+            </div>
+          </div>
+          <blockquote>
+            <p><strong>(Theorem 1)</strong>
+              <span class="katex">\footnotesize f(n_i,t)=Commit \Rightarrow f(n_0,t)=Commit, i\ne 0</span> (If a subordinate
+              is in commit state, the coordinator must also be in commit state)
+            </p>
+            <p><strong>Proof:</strong> In order for subordinate
+              <span class="katex">\footnotesize n_i</span> to be in commit state, the coordinator
+              <span class="katex">\footnotesize n_0</span> must have entered the commit state before
+              <span class="katex">\footnotesize n_i</span> and then sent a commit message to
+              <span class="katex">\footnotesize n_i</span>. It is impossible for the coordinator to send a commit message,
+              if he is not in the commit state.</p>
+          </blockquote>
+          <blockquote>
+            <p><strong>(Theorem 2)</strong>
+              <span class="katex">\footnotesize f(n_i,t)=Abort \Rightarrow f(n_0,t)=Abort, i\ne 0</span> (If a subordinate
+              is in abort state, the coordinator must also be in abort state)
+            </p>
+            <p><strong>Proof:</strong> (Analogus to 1) In order for subordinate
+              <span class="katex">\footnotesize n_i</span> to be in abort state, the coordinator
+              <span class="katex">\footnotesize n_0</span> must have entered the abort state before
+              <span class="katex">\footnotesize n_i</span> and then sent an abort message to
+              <span class="katex">\footnotesize n_i</span>. It is impossible for the coordinator to send an abort message,
+              if he is not in the abort state.</p>
+          </blockquote>
+          <blockquote>
+            <p><strong>(Theorem 3)</strong>
+              <span class="katex">\footnotesize f(n_0,t)=Commit \Rightarrow f(n_i,t)=Commit, i \ne 0</span> (If the coordinator
+              is in commit state, all subordinates must also be in commit state)
+            </p>
+            <p><strong>Proof:</strong> If the coordinator
+              <span class="katex">\footnotesize n_0</span> enters commit state, he must send commit messages to all subordinates
+              <span class="katex">\footnotesize n_i</span>. All subordinates must respond to the commit message with an ack
+              message. If the coordinator doesn't receive an ack message from a subordinate after a fixed timeout, the coordinator
+              retransmitts the commit message. It is impossible for the coordinator to send any other message than the commit
+              message in the commit phase. Eventually all subordinates will receive the commit message, thus every subordinate
+              <span class="katex">\footnotesize n_i</span> must be in commit state.</p>
+          </blockquote>
+          <blockquote>
+            <p><strong>(Theorem 4)</strong>
+              <span class="katex">\footnotesize f(n_0,t)=Abort \Rightarrow f(n_i,t)=Abort, i \ne 0</span> (If the coordinator
+              is in abort state, all subordinates must also be in abort state)
+            </p>
+            <p><strong>Proof:</strong> (Analogus to 3) If the coordinator
+              <span class="katex">\footnotesize n_0</span> enters abort state, he must send abort messages to all subordinates
+              <span class="katex">\footnotesize n_i</span>. All subordinates must respond to the abort message with an ack
+              message. If the coordinator doesn't receive an ack message from a subordinate after a fixed timeout, the coordinator
+              retransmitts the abort message. It is impossible for the coordinator to send any other message than the abort
+              message in the abort phase. Eventually all subordinates will receive the abort message, thus every subordinate
+              <span class="katex">\footnotesize n_i</span> must be in abort state.</p>
+          </blockquote>
+          <blockquote>
+            <p><strong>(Theorem 5)</strong>
+              <span class="katex">\footnotesize f(n_i,t)=Commit \Leftrightarrow f(n_j,t)=Commit</span> (If one node is in
+              commit state, then all other nodes must also be in commit state)
+            </p>
+            <p><strong>Proof:</strong> We consider 3 possible cases:</p>
+            <p><strong>Case 1:</strong>
+              <span class="katex">\footnotesize i \ne j = 0</span> (
+              <span class="katex">\footnotesize n_i</span> is subordinate,
+              <span class="katex">\footnotesize n_j</span> is coordinator)</p>
             <p>As shown in (1), if
-              <span class="katex">\scriptsize f(n_j, t)=Commit \Rightarrow f(n_i,t)=Commit</span>, and as shown in (3) if
-              <span class="katex">\scriptsize f(n_i,t)=Commit \Rightarrow f(n_j, t)=Commit</span>, thus
-              <span class="katex">\scriptsize f(n_j,t)=Commit \Leftrightarrow f(n_i,t)=Commit</span>, for
-              <span class="katex">\scriptsize j \ne i = 0</span>.</p>
-            <p><strong>Case 3:</strong>
-              <span class="katex">\footnotesize i \ne j, \quad i,j \ne 0</span> (both
-              <span class="katex">\footnotesize n_i,n_j</span> are subordinates)</p>
-            <p>As shown in (1), if
-              <span class="katex">\scriptsize f(n_i,t)=Commit \Rightarrow f(n_0, t)</span>, and as shown in (3) if
-              <span class="katex">\scriptsize f(n_0,t)=Commit \Rightarrow f(n_j,t)</span>. Intuitively this means that WLOG
-              if subordinate
-              <span class="katex">\scriptsize n_i</span> is in commit state, the coordinator also must be in commit state
-              and thus subordinate
-              <span class="katex">\scriptsize n_j</span> also must be in commit state. Thus
-              <span class="katex">\scriptsize f(n_j,t)=Commit \Leftrightarrow f(n_i,t)=Commit</span>, for
-              <span class="katex">\scriptsize i \ne j, \space i,j \ne 0</span>.</p>
-            <p>From cases 1,2,3 follows that
-              <span class="katex">\footnotesize f(n_i,t)=Commit \Leftrightarrow f(n_j,t)=Commit</span>. Simply put, it means
-              that if a node is in commit state, any other node also must be in commit state.</p>
-        </blockquote>
-        <blockquote>
-          <p><strong>(Theorem 6)</strong>
-            <span class="katex">\footnotesize f(n_i,t)=Abort \Leftrightarrow f(n_j,t)=Abort</span> (If one node is in abort
-            state, then all other nodes must also be in abort state)
-          </p>
-          <p><strong>Proof:</strong> (Analogus to 5) We consider 3 possible cases:</p>
-          <p><strong>Case 1:</strong>
-            <span class="katex">\footnotesize i \ne j = 0</span> (
-            <span class="katex">\footnotesize n_i</span> is subordinate,
-            <span class="katex">\footnotesize n_j</span> is coordinator)</p>
-          <p>As shown in (2), if
-            <span class="katex">\scriptsize f(n_i,t)=Abort \Rightarrow f(n_j,t)=Abort</span>, and as shown in (4) if
-            <span class="katex">\scriptsize f(n_j,t)=Abort \Rightarrow f(n_i,t)=Abort</span>, thus
-            <span class="katex">\scriptsize f(n_i,t)=Abort \Leftrightarrow f(n_j,t)=Abort</span>, for
-            <span class="katex">\scriptsize i \ne j = 0</span>.
-            <p><strong>Case 2:</strong>
-              <span class="katex">\footnotesize j \ne i = 0</span> (
-              <span class="katex">\footnotesize n_i</span> is coordinator,
-              <span class="katex">\footnotesize n_j</span> is subordinate)</p>
+              <span class="katex">\scriptsize f(n_i,t)=Commit \Rightarrow f(n_j,t)=Commit</span>, and as shown in (3) if
+              <span class="katex">\scriptsize f(n_j,t)=Commit \Rightarrow f(n_i,t)=Commit</span>, thus
+              <span class="katex">\scriptsize f(n_i,t)=Commit \Leftrightarrow f(n_j,t)=Commit</span>, for
+              <span class="katex">\scriptsize i \ne j = 0</span>.
+              <p><strong>Case 2:</strong>
+                <span class="katex">\footnotesize j \ne i = 0</span> (
+                <span class="katex">\footnotesize n_i</span> is coordinator,
+                <span class="katex">\footnotesize n_j</span> is subordinate)</p>
+              <p>As shown in (1), if
+                <span class="katex">\scriptsize f(n_j, t)=Commit \Rightarrow f(n_i,t)=Commit</span>, and as shown in (3)
+                if
+                <span class="katex">\scriptsize f(n_i,t)=Commit \Rightarrow f(n_j, t)=Commit</span>, thus
+                <span class="katex">\scriptsize f(n_j,t)=Commit \Leftrightarrow f(n_i,t)=Commit</span>, for
+                <span class="katex">\scriptsize j \ne i = 0</span>.</p>
+              <p><strong>Case 3:</strong>
+                <span class="katex">\footnotesize i \ne j, \quad i,j \ne 0</span> (both
+                <span class="katex">\footnotesize n_i,n_j</span> are subordinates)</p>
+              <p>As shown in (1), if
+                <span class="katex">\scriptsize f(n_i,t)=Commit \Rightarrow f(n_0, t)</span>, and as shown in (3) if
+                <span class="katex">\scriptsize f(n_0,t)=Commit \Rightarrow f(n_j,t)</span>. Intuitively this means that
+                WLOG if subordinate
+                <span class="katex">\scriptsize n_i</span> is in commit state, the coordinator also must be in commit state
+                and thus subordinate
+                <span class="katex">\scriptsize n_j</span> also must be in commit state. Thus
+                <span class="katex">\scriptsize f(n_j,t)=Commit \Leftrightarrow f(n_i,t)=Commit</span>, for
+                <span class="katex">\scriptsize i \ne j, \space i,j \ne 0</span>.</p>
+              <p>From cases 1,2,3 follows that
+                <span class="katex">\footnotesize f(n_i,t)=Commit \Leftrightarrow f(n_j,t)=Commit</span>. Simply put, it
+                means that if a node is in commit state, any other node also must be in commit state.</p>
+          </blockquote>
+          <blockquote>
+            <p><strong>(Theorem 6)</strong>
+              <span class="katex">\footnotesize f(n_i,t)=Abort \Leftrightarrow f(n_j,t)=Abort</span> (If one node is in abort
+              state, then all other nodes must also be in abort state)
+            </p>
+            <p><strong>Proof:</strong> (Analogus to 5) We consider 3 possible cases:</p>
+            <p><strong>Case 1:</strong>
+              <span class="katex">\footnotesize i \ne j = 0</span> (
+              <span class="katex">\footnotesize n_i</span> is subordinate,
+              <span class="katex">\footnotesize n_j</span> is coordinator)</p>
             <p>As shown in (2), if
-              <span class="katex">\scriptsize f(n_j, t)=Abort \Rightarrow f(n_i,t)=Abort</span>, and as shown in (4) if
-              <span class="katex">\scriptsize f(n_i,t)=Abort \Rightarrow f(n_j, t)=Abort</span>, thus
-              <span class="katex">\scriptsize f(n_j,t)=Abort \Leftrightarrow f(n_i,t)=Abort</span>, for
-              <span class="katex">\scriptsize j \ne i = 0</span>.</p>
-            <p><strong>Case 3:</strong>
-              <span class="katex">\footnotesize i \ne j, \quad i,j \ne 0</span> (both
-              <span class="katex">\footnotesize n_i,n_j</span> are subordinates)</p>
-            <p>As shown in (2), if
-              <span class="katex">\scriptsize f(n_i,t)=Abort \Rightarrow f(n_0, t)</span>, and as shown in (4) if
-              <span class="katex">\scriptsize f(n_0,t)=Abort \Rightarrow f(n_j,t)</span>. Intuitively this means that WLOG
-              if subordinate
-              <span class="katex">\scriptsize n_i</span> is in abort state, the coordinator also must be in abort state and
-              thus subordinate
-              <span class="katex">\scriptsize n_j</span> also must be in abort state. Thus
-              <span class="katex">\scriptsize f(n_j,t)=Abort \Leftrightarrow f(n_i,t)=Abort</span>, for
-              <span class="katex">\scriptsize i \ne j, \space i,j \ne 0</span>.</p>
-            <p>From cases 1,2,3 follows that
-              <span class="katex">\footnotesize f(n_i,t)=Abort \Leftrightarrow f(n_j,t)=Abort</span>. Simply put, it means
-              that if a node is in abort state, any other node also must be in abort state.</p>
-        </blockquote>
-        <blockquote>
-          <p><strong>(Theorem 7)</strong>
-            <span class="katex">\footnotesize f(n_i,t)=f(n_j,t)</span> (all nodes have the same state, consistent state)
+              <span class="katex">\scriptsize f(n_i,t)=Abort \Rightarrow f(n_j,t)=Abort</span>, and as shown in (4) if
+              <span class="katex">\scriptsize f(n_j,t)=Abort \Rightarrow f(n_i,t)=Abort</span>, thus
+              <span class="katex">\scriptsize f(n_i,t)=Abort \Leftrightarrow f(n_j,t)=Abort</span>, for
+              <span class="katex">\scriptsize i \ne j = 0</span>.
+              <p><strong>Case 2:</strong>
+                <span class="katex">\footnotesize j \ne i = 0</span> (
+                <span class="katex">\footnotesize n_i</span> is coordinator,
+                <span class="katex">\footnotesize n_j</span> is subordinate)</p>
+              <p>As shown in (2), if
+                <span class="katex">\scriptsize f(n_j, t)=Abort \Rightarrow f(n_i,t)=Abort</span>, and as shown in (4) if
+                <span class="katex">\scriptsize f(n_i,t)=Abort \Rightarrow f(n_j, t)=Abort</span>, thus
+                <span class="katex">\scriptsize f(n_j,t)=Abort \Leftrightarrow f(n_i,t)=Abort</span>, for
+                <span class="katex">\scriptsize j \ne i = 0</span>.</p>
+              <p><strong>Case 3:</strong>
+                <span class="katex">\footnotesize i \ne j, \quad i,j \ne 0</span> (both
+                <span class="katex">\footnotesize n_i,n_j</span> are subordinates)</p>
+              <p>As shown in (2), if
+                <span class="katex">\scriptsize f(n_i,t)=Abort \Rightarrow f(n_0, t)</span>, and as shown in (4) if
+                <span class="katex">\scriptsize f(n_0,t)=Abort \Rightarrow f(n_j,t)</span>. Intuitively this means that WLOG
+                if subordinate
+                <span class="katex">\scriptsize n_i</span> is in abort state, the coordinator also must be in abort state
+                and thus subordinate
+                <span class="katex">\scriptsize n_j</span> also must be in abort state. Thus
+                <span class="katex">\scriptsize f(n_j,t)=Abort \Leftrightarrow f(n_i,t)=Abort</span>, for
+                <span class="katex">\scriptsize i \ne j, \space i,j \ne 0</span>.</p>
+              <p>From cases 1,2,3 follows that
+                <span class="katex">\footnotesize f(n_i,t)=Abort \Leftrightarrow f(n_j,t)=Abort</span>. Simply put, it means
+                that if a node is in abort state, any other node also must be in abort state.</p>
+          </blockquote>
+          <blockquote>
+            <p><strong>(Theorem 7)</strong>
+              <span class="katex">\footnotesize f(n_i,t)=f(n_j,t)</span> (all nodes have the same state, consistent state)
+            </p>
+            <p><strong>Proof:</strong> As shown in (5) and (6), if any node is in commit (abort) state, then any other node
+              must be in commit (abort) state. Thus</p>
+            <div style="text-align: center">
+              <span class="katex">\large f(n_i,t)=f(n_j,t),\quad \forall i,j</span>
+            </div>
+            <div style="text-align: right;">
+              <span class="katex">\square</span>
+            </div>
+          </blockquote>
+          <h5 id="simulations">Simulations</h5>
+          <p>We have conducted a series of simulations on the two phase commit protocols in order to observe it's behaviour
+            according to different variables. We made simuations over the commit phase of the protocol in order to observe the time needed for a consistent state. 
+            The observations were made using [rafael] [elias]. Both simulators produced
+            similar results. In order to proceed with the simulations, we first identified the variables in the experiment.
+            Below you will find an enumeration of the identified variables:</p>
+          <ol>
+            <li><span class="katex">\small t_{runtime}</span>: Runtime (time needed in order to reach the consistent state)</li>
+            <li><span class="katex">\small p_{error}</span>: Error rate (propability of a subordinate failure during commit)</li>
+            <li><span class="katex">\small n_{sub}</span>: Number of subordinates</li>
+            <li><span class="katex">\small n_{commits}</span>: Number of commits</li>
+            <li><span class="katex">\small n_{parallel}</span>: Number of concurrent commits (parallel operations)</li>
+            <li><span class="katex">\small t_{message}</span>: Message delay</li>
+            <li><span class="katex">\small t_{recovery}</span>: Recovery delay (time needed for a subordinate to recover from
+              failure)
+            </li>
+            <li><span class="katex">\small t_{timeout}</span>: Coordinator timeout (interval after which the coordinator assumes
+              the subordinate had a failure)</li>
+            <li><span class="katex">\small t_{backoff}</span>: Backoff time (time the coordinator waits until contacting the
+              subordinate again)</li>
+          </ol>
+          <p>Obviously, <span class="katex">\footnotesize n_{runtime}</span> 
+            is the dependent variable. Note that, every simulation has been run with 1000 samples. All graphs below are histograms over the samples.
+            Every histogram is accompanied by <span class="katex">\footnotesize \mu</span> which denotes the mean and
+            <span class="katex">\footnotesize \sigma</span> which denotes the standard deviation
           </p>
-          <p><strong>Proof:</strong> As shown in (5) and (6), if any node is in commit (abort) state, then any other node must
-            be in commit (abort) state. Thus</p>
-          <div style="text-align: center">
-            <span class="katex">\large f(n_i,t)=f(n_j,t),\quad \forall i,j</span>
+          <p>For our first round of simulations, we decided to variate the error rate whilst fixing all other variables. Below
+            you can find an enumaration of all values from the fixed variables:</p>
+          <ul>
+            <li><span class="katex">\small n_{sub}=100</span></li>
+            <li><span class="katex">\small n_{commits}=100</span></li>
+            <li><span class="katex">\small n_{parallel}=1</span></li>
+            <li><span class="katex">\small t_{message}=0 \scriptsize \ ms</span></li>
+            <li><span class="katex">\small t_{recovery}=10 \scriptsize \ ms</span></li>
+            <li><span class="katex">\small t_{timeout}=2 \scriptsize \ ms</span></li>
+            <li><span class="katex">\small t_{backoff}=8 \scriptsize \ ms</span></li>
+          </ul>
+          <p>Here our simulations on a variable error rate <span class="katex">\footnotesize p_{error}</span>:</p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
+        <div class="box">
+          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_error0_reboot_delay10_backoff8.svg">
+        </div>
+        <div class="plot-description">
+          Figure 4: variable error rate experiment with:
+          <span class="katex">\footnotesize p_{error}=0,</span><br/>
+          <span class="katex">\footnotesize \mu = 35.086 \scriptsize \ ms,\ </span>
+          <span class="katex">\footnotesize \sigma = 6.388381 \scriptsize \ ms</span>
+        </div>
+      </div>
+      <div class="column">
+        <div class="box">
+          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_errore_5_reboot_delay10_backoff8.svg">
+        </div>
+        <div class="plot-description">
+          Figure 5: variable error rate experiment with:
+          <span class="katex">\footnotesize p_{error}=10^{-5},</span><br/>
+          <span class="katex">\footnotesize \mu = 49.054 \scriptsize \ ms,\ </span>
+          <span class="katex">\footnotesize \sigma = 11.94159 \scriptsize \ ms</span>
+        </div>
+      </div>
+      <div class="column">
+        <div class="box">
+          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_errore_4_reboot_delay10_backoff8.svg">
+        </div>
+        <div class="plot-description">
+          Figure 6: variable error rate experiment with:
+          <span class="katex">\footnotesize p_{error}=10^{-4},</span><br/>
+          <span class="katex">\footnotesize \mu = 58.669 \scriptsize \ ms,\ </span>
+          <span class="katex">\footnotesize \sigma = 12.02922 \scriptsize \ ms</span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
+        <div class="box">
+          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_errore_3_reboot_delay10_backoff8.svg">
+        </div>
+        <div class="plot-description">
+          Figure 7: variable error rate experiment with:
+          <span class="katex">\footnotesize p_{error}=10^{-3},</span><br/>
+          <span class="katex">\footnotesize \mu = 68.187 \scriptsize \ ms,\ </span>
+          <span class="katex">\footnotesize \sigma = 11.40307 \scriptsize \ ms</span>
+        </div>
+      </div>
+      <div class="column">
+        <div class="box">
+          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_errore_2_reboot_delay10_backoff8.svg">
+        </div>
+        <div class="plot-description">
+          Figure 8: variable error rate experiment with:
+          <span class="katex">\footnotesize p_{error}=10^{-2},</span><br/>
+          <span class="katex">\footnotesize \mu = 120.051 \scriptsize \ ms,\ </span>
+          <span class="katex">\footnotesize \sigma = 16.37775 \scriptsize \ ms</span>
+        </div>
+      </div>
+      <div class="column">
+        <div class="box">
+          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_errore_1_reboot_delay10_backoff8.svg">
+        </div>
+        <div class="plot-description">
+          Figure 9: variable error rate experiment with:
+          <span class="katex">\footnotesize p_{error}=10^{-1},</span><br/>
+          <span class="katex">\footnotesize \mu = 423.256 \scriptsize \ ms,\ </span>
+          <span class="katex">\footnotesize \sigma = 37.07078 \scriptsize \ ms</span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
+        <div class="box">
+          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_error2e_1_reboot_delay10_backoff8.svg">
+        </div>
+        <div class="plot-description">
+          Figure 10: variable error rate experiment with:
+          <span class="katex">\footnotesize p_{error}=2 \times 10^{-1},</span><br/>
+          <span class="katex">\footnotesize \mu = 809.284 \scriptsize \ ms,\ </span>
+          <span class="katex">\footnotesize \sigma = 59.04281 \scriptsize \ ms</span>
+        </div>
+      </div>
+      <div class="column">
+        <div class="box">
+          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_error3e_1_reboot_delay10_backoff8.svg">
+        </div>
+        <div class="plot-description">
+          Figure 11: variable error rate experiment with:
+          <span class="katex">\footnotesize p_{error}=3 \times 10^{-1},</span><br/>
+          <span class="katex">\footnotesize \mu = 1202.834 \scriptsize \ ms,\ </span>
+          <span class="katex">\footnotesize \sigma = 69.34689 \scriptsize \ ms</span>
+        </div>
+      </div>
+      <div class="column">
+        <div class="box">
+          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_error4e_1_reboot_delay10_backoff8.svg">
+        </div>
+        <div class="plot-description">
+          Figure 12: variable error rate experiment with:
+          <span class="katex">\footnotesize p_{error}=4 \times 10^{-1},</span><br/>
+          <span class="katex">\footnotesize \mu = 1766.84 \scriptsize \ ms,\ </span>
+          <span class="katex">\footnotesize \sigma = 90.44586 \scriptsize \ ms</span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
+        <div class="slim">
+          <h5 id="observations">Observations</h5>
+          <p>
+            From the simulations we can see some interesting patterns emerge. Most notably, we observe that the runtime follows a normal
+            distribution. We believe that the runtime follows a normal distribution due to the <a href="https://en.wikipedia.org/wiki/Central_limit_theorem"
+              target="_blank">Central Limit Theorem</a>. The CLT states that if a sample is obtained containing a large number
+            of observations, each observation being randomly generated in a way that does not depend on the values of the
+            other observations, and this procedure is performed many times, the computed values of the arithmetic mean will
+            be distributed according to the normal distribution. During the experiment we only had one variable, the error
+            rate. We made use of <a href="https://github.com/ckknight/random-js" target="_blank">random-js</a>, which generated
+            uniformly distributed random values thus ensuring failures where uniformly distributed as shown in Figure 13.
+            The random values were produced in the
+            <span class="katex">\footnotesize [0, 1)</span> interval.
+          </p>
+          <p>We also observe that the arithemic mean of the runtime increases as our error rate increases, as shown in Figure
+            14. This is quite trivial since it is very intuitive that an increase in error will cause more failures in the
+            two phase commit, resulting in more delays. It is also worth mentioning, that the relationship between the error
+            rate and the arithmetic mean of the runtime, seems to be linear or exponential. It makes more sense that the
+            relationship is exponential, since the runtime should go towards <span class="katex">\infty</span> as the error
+            rate approaches <span class="katex">\footnotesize 1</span>.</p>
+          <p>
+            Additionaly, it seems that the standard deviation is related to the error rate as well. As shown in Figure 15, we can observe
+            that as the error rate increases, the standard deviation also does. This behaviour might be explained from the
+            fact that a higher chance of failure, will result in a bigger variation of results, assuming failures are uniformly
+            distributed. We can also imagine it in a different approach. Let's imagine simple coin tosses. More coin tosses
+            will result in a bigger possible variation of results. The relationship of the 2 variables seems to be logarithmic
+            or linear.
+          </p>
+        </div>
+      </div>
+      <div class="column">
+        <div style="max-width: 35rem; margin: auto;">
+          <div class="box">
+            <img src="./img/rng_distribution.svg">
           </div>
-          <div style="text-align: right;">
-            <span class="katex">\square</span>
+          <div class="plot-description">
+            Figure 13: Random number generator value distribution.
           </div>
-        </blockquote>
+          <div class="box">
+            <img src="./img/error_rate_arithmetic_mean.svg">
+          </div>
+          <div class="plot-description">
+            Figure 14: Arithmetic mean of the runtime <span class="katex">\small \mu_{t_{runtime}}</span> with respect to the error rate <span class="katex">\footnotesize p_{error}</span>.
+          </div>
+          <div class="box">
+            <img src="./img/error_rate_standard_deviation.svg">
+          </div>
+          <div class="plot-description">
+            Figure 15: Standard deviation of the runtime <span class="katex">\small \sigma_{t_{runtime}}</span> with respect to the error rate <span class="katex">\footnotesize p_{error}</span>.
+          </div>
+        </div>
       </div>
     </div>
   </div>

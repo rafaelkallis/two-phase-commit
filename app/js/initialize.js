@@ -1,5 +1,3 @@
-const Promise = require('bluebird');
-
 import { Coordinator } from './coordinator';
 import { Subordinate } from './subordinate';
 import { Transaction } from './transaction';
@@ -8,9 +6,7 @@ import { Notification } from './notification';
 import { Explosion } from './explosion';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // do your setup here
-  console.log('Initialized app');
-  Promise.each(Array.from(document.getElementsByTagName('katex')), element => katex.render(element.innerHTML, element));
+  Promise.each(Array.from(document.getElementsByClassName('katex')), element => Katex.render(element.innerHTML, element));
   document.getElementById('start-transaction-button').addEventListener('click', () => start_transaction());
     window.onkeydown = (event) => event.keyCode == 13 && start_transaction();
 
@@ -88,14 +84,6 @@ function start_transaction() {
     });
 
     coordinator.perform_transaction(transaction, delay, bugs);
-}
-
-function ready(fn) {
-    if (document.readyState != 'loading') {
-        fn();
-    } else {
-        document.addEventListener('DOMContentLoaded', fn);
-    }
 }
 
 function bind_log_updater(log_id, active_observable) {

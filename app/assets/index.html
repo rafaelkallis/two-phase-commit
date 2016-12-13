@@ -23,22 +23,24 @@
           <h4>Transaction consistency in a distributed database environment</h4>
           <p>by <a href="https://github.com/rafaelkallis" target="_blank">Rafael Kallis</a>, <a href="https://github.com/alpox"
               target="_blank">Elias Bernhaut</a></p>
-          <h5>Table of Properties</h5>
+          <h5>Table of Contents</h5>
           <ul>
             <li><a href="#problem">Problem Definition</a></li>
             <li><a href="#2pc">Two Phase Commit</a></li>
             <li><a href="#example">Running example</a></li>
             <li><a href="#formalisation">Formalisation of the problem</a></li>
+            <li><a href="#proof">Consistent state during two phase commit</a></li>
             <li><a href="#simulations">Simulations</a></li>
+            <li><a href="#comments">Comments on simulations</a></li>
             <li><a href="#observations">Observations</a></li>
           </ul>
           <h5 id="problem">Problem Definition</h5>
-          <p>Unlike a transaction on a local database, a distributed transaction involves altering data on multiple databases.
+          <p class="paragraph">Unlike a transaction on a local database, a distributed transaction involves altering data on multiple databases.
             Consequently, distributed transaction processing is more complicated, because the database must coordinate the
             committing or aborting the changes in a transaction as a self-contained unit. In other words, the entire transaction
             commits, or the entire transaction aborts.</p>
           <h5 id="2pc">Two Phase Commit Protocol</h5>
-          <p>The database ensures the integrity of data in a distributed transaction using the two-phase commit mechanism. In
+          <p class="paragraph">The database ensures the integrity of data in a distributed transaction using the two-phase commit mechanism. In
             the prepare phase, the coordinator in the transaction asks the subordinates to promise to commit or abort the
             transaction. If all subordinates are able to commit the transaction, the transaction stages in the commit phase,
             otherwise it stages in the abort phase. During the commit phase, the coordinator asks all subordinates to commit
@@ -53,14 +55,18 @@
             to stable storage.</div>
         </div>
         <div class="slim">
-          <p>We assume that each tranaction runs through a different instance of the state charts below. When the transaction
+          <p class="paragraph">We assume that each tranaction runs through a different instance of the state charts below. When the transaction
             starts, the coordinator sends prepare messages to all subordinates. The coordinator awaits all subordinates to
-            respond with their votes. If all subordinates responded with a yes vote the coordinator sends commit messages
-            to all subordinates. If any subordinate responded to the prepare message with a no or a timeout has occured,
-            the coordinator sends abort messages to all subordinates. After sending commit (abort) messages, the coordinator
-            awaits all subordinates to respond with an ack message. If a timeout occurres while waiting, the coordinator
-            retransmitts the commit (abort) message to the respective subordinate. The transaction ends when all subordinates
-            have responded with an ack message to the coordinator's commit (abort) message.</p>
+            respond with their votes.
+          </p>
+          <p class="paragraph"> If all subordinates responded with a yes vote the coordinator sends commit messages to all subordinates. If any
+            subordinate responded to the prepare message with a no or a timeout has occured, the coordinator sends abort
+            messages to all subordinates. After sending commit (abort) messages, the coordinator awaits all subordinates
+            to respond with an ack message.
+          </p>
+          <p class="paragraph"> If a timeout occurres while waiting, the coordinator retransmitts the commit (abort) message to the respective
+            subordinate. The transaction ends when all subordinates have responded with an ack message to the coordinator's
+            commit (abort) message.</p>
         </div>
       </div>
     </div>
@@ -82,13 +88,15 @@
       <div class="column">
         <div class="slim">
           <h5 id="example">Running example</h5>
-          <p>
-            Below you can have some hands-on experience on the two phase commit protocol. The simulation shows you that it is impossible
-            not to reach a consistent state. You can start a transaction by pressing <code>enter</code> or <code>return</code>            depending on your machine. On the top left, you can see what's going on with the coordinator. On the top right,
-            you have an overview of the statuses from your transactions. On the middle row you have an overview of your 3
-            subordinates. It is also possible to inject some bugs. You can do so by selecting the appropriate bug from the
-            panel below the subordinates. Note that if selecting a bug that is injected on a subordinate, there's a slight
-            chance that the bug won't be injected succesfully, since the bugs are injected uniformly among the subordinates.
+          <p class="paragraph">Below you can have some hands-on experience on the two phase commit protocol. The simulation shows you that it
+            is impossible not to reach a consistent state. You can start a transaction by pressing <code>enter</code> or
+            <code>return</code> depending on your machine. On the top left, you can see what's going on with the coordinator.
+            On the top right, you have an overview of the statuses from your transactions. On the middle row you have an
+            overview of your 3 subordinates.
+          </p>
+          <p class="paragraph"> It is also possible to inject some bugs. You can do so by selecting the appropriate
+            bug from the panel below the subordinates. Note that if selecting a bug that is injected on a subordinate, there's
+            a slight chance that the bug won't be injected succesfully, since the bugs are injected uniformly among the subordinates.
             You can also crash a node by clicking on the coordinator's or the subordinates' label.
           </p>
         </div>
@@ -239,16 +247,21 @@
           </div>
           <div>
             In order to reach a consistent state, following condition must be satisfied:
-            <div style="text-align: center; margin-top: 20px;">
+            <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
               <span class="katex">\large f(n_i,t) = f(n_j,t), \quad \forall i,j</span>
             </div>
           </div>
+          <h5 id="proof">Consistent state during two phase commit</h5>
+          <p class="paragraph">
+            The coordinator <span class="katex">\footnotesize n_0</span> knows in which state he is in case of a failure,
+            since the two phase commit protocol dictates the coordinator to keep a log.
+          </p>
           <blockquote>
             <p><strong>(Theorem 1)</strong>
               <span class="katex">\footnotesize f(n_i,t)=Commit \Rightarrow f(n_0,t)=Commit, i\ne 0</span> (If a subordinate
               is in commit state, the coordinator must also be in commit state)
             </p>
-            <p><strong>Proof:</strong> In order for subordinate
+            <p class="paragraph"><strong>Proof:</strong> In order for subordinate
               <span class="katex">\footnotesize n_i</span> to be in commit state, the coordinator
               <span class="katex">\footnotesize n_0</span> must have entered the commit state before
               <span class="katex">\footnotesize n_i</span> and then sent a commit message to
@@ -260,7 +273,7 @@
               <span class="katex">\footnotesize f(n_i,t)=Abort \Rightarrow f(n_0,t)=Abort, i\ne 0</span> (If a subordinate
               is in abort state, the coordinator must also be in abort state)
             </p>
-            <p><strong>Proof:</strong> (Analogus to 1) In order for subordinate
+            <p class="paragraph"><strong>Proof:</strong> (Analogus to 1) In order for subordinate
               <span class="katex">\footnotesize n_i</span> to be in abort state, the coordinator
               <span class="katex">\footnotesize n_0</span> must have entered the abort state before
               <span class="katex">\footnotesize n_i</span> and then sent an abort message to
@@ -272,7 +285,7 @@
               <span class="katex">\footnotesize f(n_0,t)=Commit \Rightarrow f(n_i,t)=Commit, i \ne 0</span> (If the coordinator
               is in commit state, all subordinates must also be in commit state)
             </p>
-            <p><strong>Proof:</strong> If the coordinator
+            <p class="paragraph"><strong>Proof:</strong> If the coordinator
               <span class="katex">\footnotesize n_0</span> enters commit state, he must send commit messages to all subordinates
               <span class="katex">\footnotesize n_i</span>. All subordinates must respond to the commit message with an ack
               message. If the coordinator doesn't receive an ack message from a subordinate after a fixed timeout, the coordinator
@@ -285,7 +298,7 @@
               <span class="katex">\footnotesize f(n_0,t)=Abort \Rightarrow f(n_i,t)=Abort, i \ne 0</span> (If the coordinator
               is in abort state, all subordinates must also be in abort state)
             </p>
-            <p><strong>Proof:</strong> (Analogus to 3) If the coordinator
+            <p class="paragraph"><strong>Proof:</strong> (Analogus to 3) If the coordinator
               <span class="katex">\footnotesize n_0</span> enters abort state, he must send abort messages to all subordinates
               <span class="katex">\footnotesize n_i</span>. All subordinates must respond to the abort message with an ack
               message. If the coordinator doesn't receive an ack message from a subordinate after a fixed timeout, the coordinator
@@ -321,7 +334,7 @@
               <p><strong>Case 3:</strong>
                 <span class="katex">\footnotesize i \ne j, \quad i,j \ne 0</span> (both
                 <span class="katex">\footnotesize n_i,n_j</span> are subordinates)</p>
-              <p>As shown in (1), if
+              <p class="paragraph">As shown in (1), if
                 <span class="katex">\scriptsize f(n_i,t)=Commit \Rightarrow f(n_0, t)</span>, and as shown in (3) if
                 <span class="katex">\scriptsize f(n_0,t)=Commit \Rightarrow f(n_j,t)</span>. Intuitively this means that
                 WLOG if subordinate
@@ -361,7 +374,7 @@
               <p><strong>Case 3:</strong>
                 <span class="katex">\footnotesize i \ne j, \quad i,j \ne 0</span> (both
                 <span class="katex">\footnotesize n_i,n_j</span> are subordinates)</p>
-              <p>As shown in (2), if
+              <p class="paragraph">As shown in (2), if
                 <span class="katex">\scriptsize f(n_i,t)=Abort \Rightarrow f(n_0, t)</span>, and as shown in (4) if
                 <span class="katex">\scriptsize f(n_0,t)=Abort \Rightarrow f(n_j,t)</span>. Intuitively this means that WLOG
                 if subordinate
@@ -388,11 +401,13 @@
             </div>
           </blockquote>
           <h5 id="simulations">Simulations</h5>
-          <p>We have conducted a series of simulations on the two phase commit protocols in order to observe it's behaviour
-            according to different variables. We made simuations over the commit phase of the protocol in order to observe the time needed for a consistent state. 
-            The observations were made using [rafael] [elias]. Both simulators produced
-            similar results. In order to proceed with the simulations, we first identified the variables in the experiment.
-            Below you will find an enumeration of the identified variables:</p>
+          <p class="paragraph">We have conducted a series of simulations on the two phase commit protocols in order to observe it's behaviour
+            according to different variables. We made simuations over the commit phase of the protocol in order to observe
+            the time needed for a consistent state. The simulations were made using <a href="https://github.com/rafaelkallis/2pc-runtime-simulator"
+              target="_blank">2pc-runtime-simulator</a> and <a href="https://github.com/alpox/uzh-2pc-benchmarks" target="_blank">uzh-2pc-benchmarks</a>.
+            Both simulators produced similar results. For the results below, we only made use of the former simulator. In
+            order to proceed with the simulations, we first identified the variables in the experiment. Below you will find
+            an enumeration of the identified variables:</p>
           <ol>
             <li><span class="katex">\small t_{runtime}</span>: Runtime (time needed in order to reach the consistent state)</li>
             <li><span class="katex">\small p_{error}</span>: Error rate (propability of a subordinate failure during commit)</li>
@@ -408,10 +423,10 @@
             <li><span class="katex">\small t_{backoff}</span>: Backoff time (time the coordinator waits until contacting the
               subordinate again)</li>
           </ol>
-          <p>Obviously, <span class="katex">\footnotesize n_{runtime}</span> 
-            is the dependent variable. Note that, every simulation has been run with 1000 samples. All graphs below are histograms over the samples.
-            Every histogram is accompanied by <span class="katex">\footnotesize \mu</span> which denotes the mean and
-            <span class="katex">\footnotesize \sigma</span> which denotes the standard deviation
+          <p class="paragraph">Obviously, <span class="katex">\footnotesize n_{runtime}</span> is the dependent variable. Note that, every simulation
+            has been run with 1000 samples. All graphs below are histograms over the samples. Every histogram is accompanied
+            by <span class="katex">\footnotesize \mu</span> which denotes the arithmetic mean and
+            <span class="katex">\footnotesize \sigma</span> which denotes the standard deviation.
           </p>
           <p>For our first round of simulations, we decided to variate the error rate whilst fixing all other variables. Below
             you can find an enumaration of all values from the fixed variables:</p>
@@ -424,14 +439,15 @@
             <li><span class="katex">\small t_{timeout}=2 \scriptsize \ ms</span></li>
             <li><span class="katex">\small t_{backoff}=8 \scriptsize \ ms</span></li>
           </ul>
-          <p>Here our simulations on a variable error rate <span class="katex">\footnotesize p_{error}</span>:</p>
+          <p>Here our simulations on a variable error rate <span class="katex">\footnotesize p_{error}</span>. The results can
+            also be downloaded as a CSV file <a href="./data/runtimes.csv" target="_blank">here</a>.</p>
         </div>
       </div>
     </div>
     <div class="row">
       <div class="column">
         <div class="box">
-          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_error0_reboot_delay10_backoff8.svg">
+          <img src="./img/results_error_0.svg">
         </div>
         <div class="plot-description">
           Figure 4: variable error rate experiment with:
@@ -442,7 +458,7 @@
       </div>
       <div class="column">
         <div class="box">
-          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_errore_5_reboot_delay10_backoff8.svg">
+          <img src="./img/results_error_10_to_the_minus_5.svg">
         </div>
         <div class="plot-description">
           Figure 5: variable error rate experiment with:
@@ -453,7 +469,7 @@
       </div>
       <div class="column">
         <div class="box">
-          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_errore_4_reboot_delay10_backoff8.svg">
+          <img src="./img/results_error_10_to_the_minus_4.svg">
         </div>
         <div class="plot-description">
           Figure 6: variable error rate experiment with:
@@ -466,7 +482,7 @@
     <div class="row">
       <div class="column">
         <div class="box">
-          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_errore_3_reboot_delay10_backoff8.svg">
+          <img src="./img/results_error_10_to_the_minus_3.svg">
         </div>
         <div class="plot-description">
           Figure 7: variable error rate experiment with:
@@ -477,7 +493,7 @@
       </div>
       <div class="column">
         <div class="box">
-          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_errore_2_reboot_delay10_backoff8.svg">
+          <img src="./img/results_error_10_to_the_minus_2.svg">
         </div>
         <div class="plot-description">
           Figure 8: variable error rate experiment with:
@@ -488,7 +504,7 @@
       </div>
       <div class="column">
         <div class="box">
-          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_errore_1_reboot_delay10_backoff8.svg">
+          <img src="./img/results_error_10_to_the_minus_1.svg">
         </div>
         <div class="plot-description">
           Figure 9: variable error rate experiment with:
@@ -501,7 +517,7 @@
     <div class="row">
       <div class="column">
         <div class="box">
-          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_error2e_1_reboot_delay10_backoff8.svg">
+          <img src="./img/results_error_2_10_to_the_minus_1.svg">
         </div>
         <div class="plot-description">
           Figure 10: variable error rate experiment with:
@@ -512,7 +528,7 @@
       </div>
       <div class="column">
         <div class="box">
-          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_error3e_1_reboot_delay10_backoff8.svg">
+          <img src="./img/results_error_3_10_to_the_minus_1.svg">
         </div>
         <div class="plot-description">
           Figure 11: variable error rate experiment with:
@@ -523,7 +539,7 @@
       </div>
       <div class="column">
         <div class="box">
-          <img src="./img/results_n_sub100_req_delay2_n_commits100_timeout2_error4e_1_reboot_delay10_backoff8.svg">
+          <img src="./img/results_error_4_10_to_the_minus_1.svg">
         </div>
         <div class="plot-description">
           Figure 12: variable error rate experiment with:
@@ -535,33 +551,76 @@
     </div>
     <div class="row">
       <div class="column">
+        <div class="box">
+          <img src="./img/results_error_5_10_to_the_minus_1.svg">
+        </div>
+        <div class="plot-description">
+          Figure 13: variable error rate experiment with:
+          <span class="katex">\footnotesize p_{error}=2 \times 10^{-5},</span><br/>
+          <span class="katex">\footnotesize \mu = 2501.189 \scriptsize \ ms,\ </span>
+          <span class="katex">\footnotesize \sigma = 133.7368 \scriptsize \ ms</span>
+        </div>
+      </div>
+      <div class="column">
+        <div class="box">
+          <img src="./img/results_error_6_10_to_the_minus_1.svg">
+        </div>
+        <div class="plot-description">
+          Figure 14: variable error rate experiment with:
+          <span class="katex">\footnotesize p_{error}=3 \times 10^{-6},</span><br/>
+          <span class="katex">\footnotesize \mu = 3574.612 \scriptsize \ ms,\ </span>
+          <span class="katex">\footnotesize \sigma = 179.4063 \scriptsize \ ms</span>
+        </div>
+      </div>
+      <div class="column">
+        <div class="box">
+          <img src="./img/results_error_7_10_to_the_minus_1.svg">
+        </div>
+        <div class="plot-description">
+          Figure 15: variable error rate experiment with:
+          <span class="katex">\footnotesize p_{error}=4 \times 10^{-7},</span><br/>
+          <span class="katex">\footnotesize \mu = 5582.507 \scriptsize \ ms,\ </span>
+          <span class="katex">\footnotesize \sigma = 237.9498 \scriptsize \ ms</span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
         <div class="slim">
+          <h5 id="comments">Comments on Simulation</h5>
+          <p class="paragraph">
+            Like in every computer simulation, many factors caused noise in our simulation. We expected that the results of our simulations
+            would vary from machine to machine. All results shown here, were produced by a <a href="http://www.everymac.com/systems/apple/macbook_pro/specs/macbook-pro-core-i7-2.8-15-iris-only-mid-2015-retina-display-specs.html"
+              target="_blank">Macbook Pro 2015</a>.
+          </p>
+          <p class="paragraph">Besides the running machine, we also expected that our random number generator, which was responsible for causing
+            uniformly distributed failures, wouldn't be perfectly uniform. We decided to use a third-party, open source library
+            which helped us produce sufficiently uniform distributed values. We made use of <a href="https://github.com/ckknight/random-js"
+              target="_blank">random-js</a>, which generated uniformly distributed random values thus ensuring failures where
+            uniformly distributed as shown in Figure 16. We generated <span class="katex">\scriptsize 1'000'000</span> values in the
+            <span class="katex">\footnotesize [0, 1)</span> interval.
+          </p>
           <h5 id="observations">Observations</h5>
-          <p>
-            From the simulations we can see some interesting patterns emerge. Most notably, we observe that the runtime follows a normal
+          <p class="paragraph"> From the simulations we can see some interesting patterns emerge. Most notably, we observe that the runtime follows a normal
             distribution. We believe that the runtime follows a normal distribution due to the <a href="https://en.wikipedia.org/wiki/Central_limit_theorem"
               target="_blank">Central Limit Theorem</a>. The CLT states that if a sample is obtained containing a large number
             of observations, each observation being randomly generated in a way that does not depend on the values of the
             other observations, and this procedure is performed many times, the computed values of the arithmetic mean will
             be distributed according to the normal distribution. During the experiment we only had one variable, the error
-            rate. We made use of <a href="https://github.com/ckknight/random-js" target="_blank">random-js</a>, which generated
-            uniformly distributed random values thus ensuring failures where uniformly distributed as shown in Figure 13.
-            The random values were produced in the
-            <span class="katex">\footnotesize [0, 1)</span> interval.
+            rate.
           </p>
-          <p>We also observe that the arithemic mean of the runtime increases as our error rate increases, as shown in Figure
-            14. This is quite trivial since it is very intuitive that an increase in error will cause more failures in the
+          <p class="paragraph">We also observe that the arithemic mean of the runtime increases as our error rate increases, as shown in Figure
+            17. This is quite trivial since it is very intuitive that an increase in error will cause more failures in the
             two phase commit, resulting in more delays. It is also worth mentioning, that the relationship between the error
-            rate and the arithmetic mean of the runtime, seems to be linear or exponential. It makes more sense that the
-            relationship is exponential, since the runtime should go towards <span class="katex">\infty</span> as the error
-            rate approaches <span class="katex">\footnotesize 1</span>.</p>
-          <p>
-            Additionaly, it seems that the standard deviation is related to the error rate as well. As shown in Figure 15, we can observe
-            that as the error rate increases, the standard deviation also does. This behaviour might be explained from the
-            fact that a higher chance of failure, will result in a bigger variation of results, assuming failures are uniformly
-            distributed. We can also imagine it in a different approach. Let's imagine simple coin tosses. More coin tosses
-            will result in a bigger possible variation of results. The relationship of the 2 variables seems to be logarithmic
-            or linear.
+            rate and the arithmetic mean of the runtime, seems to be exponential. The mean runtime should approach
+            <span class="katex">\infty</span> as the error rate approaches <span class="katex">\footnotesize 1</span>.</p>
+          <p class="paragraph">
+            Additionaly, it seems that the standard deviation is related to the error rate as well. As shown in Figure 18, we can observe
+            that as the error rate increases, the standard deviation also does. An higher chance of failure will result in
+            a bigger variation of results, assuming failures are uniformly distributed. We can also imagine it in a different
+            approach. Let's imagine simple coin tosses. More coin tosses will result in a bigger possible variation of results.
+            The relationship of the two variables seems to be exponential. The standard deviation should approach
+            <span class="katex">\infty</span> as the error rate approaches <span class="katex">\footnotesize 1</span>.
           </p>
         </div>
       </div>
@@ -571,19 +630,21 @@
             <img src="./img/rng_distribution.svg">
           </div>
           <div class="plot-description">
-            Figure 13: Random number generator value distribution.
+            Figure 16: Random number generator value distribution.
           </div>
           <div class="box">
             <img src="./img/error_rate_arithmetic_mean.svg">
           </div>
           <div class="plot-description">
-            Figure 14: Arithmetic mean of the runtime <span class="katex">\small \mu_{t_{runtime}}</span> with respect to the error rate <span class="katex">\footnotesize p_{error}</span>.
+            Figure 17: Arithmetic mean of the runtime <span class="katex">\small \mu_{t_{runtime}}</span> with respect to
+            the error rate <span class="katex">\footnotesize p_{error}</span>.
           </div>
           <div class="box">
             <img src="./img/error_rate_standard_deviation.svg">
           </div>
           <div class="plot-description">
-            Figure 15: Standard deviation of the runtime <span class="katex">\small \sigma_{t_{runtime}}</span> with respect to the error rate <span class="katex">\footnotesize p_{error}</span>.
+            Figure 18: Standard deviation of the runtime <span class="katex">\small \sigma_{t_{runtime}}</span> with respect
+            to the error rate <span class="katex">\footnotesize p_{error}</span>.
           </div>
         </div>
       </div>

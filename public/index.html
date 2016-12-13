@@ -33,6 +33,7 @@
             <li><a href="#simulations">Simulations</a></li>
             <li><a href="#comments">Comments on simulations</a></li>
             <li><a href="#observations">Observations</a></li>
+            <li><a href="#conclusions">Conslusions</a></li>
           </ul>
           <h5 id="problem">Problem Definition</h5>
           <p class="paragraph">Unlike a transaction on a local database, a distributed transaction involves altering data on multiple databases.
@@ -94,10 +95,10 @@
             On the top right, you have an overview of the statuses from your transactions. On the middle row you have an
             overview of your 3 subordinates.
           </p>
-          <p class="paragraph"> It is also possible to inject some bugs. You can do so by selecting the appropriate
-            bug from the panel below the subordinates. Note that if selecting a bug that is injected on a subordinate, there's
-            a slight chance that the bug won't be injected succesfully, since the bugs are injected uniformly among the subordinates.
-            You can also crash a node by clicking on the coordinator's or the subordinates' label.
+          <p class="paragraph"> It is also possible to inject some bugs. You can do so by selecting the appropriate bug from the panel below the
+            subordinates. Note that if selecting a bug that is injected on a subordinate, there's a slight chance that the
+            bug won't be injected succesfully, since the bugs are injected uniformly among the subordinates. You can also
+            crash a node by clicking on the coordinator's or the subordinates' label.
           </p>
         </div>
       </div>
@@ -315,37 +316,40 @@
             <p><strong>Case 1:</strong>
               <span class="katex">\footnotesize i \ne j = 0</span> (
               <span class="katex">\footnotesize n_i</span> is subordinate,
-              <span class="katex">\footnotesize n_j</span> is coordinator)</p>
+              <span class="katex">\footnotesize n_j</span> is coordinator)
+            </p>
             <p>As shown in (1), if
               <span class="katex">\scriptsize f(n_i,t)=Commit \Rightarrow f(n_j,t)=Commit</span>, and as shown in (3) if
               <span class="katex">\scriptsize f(n_j,t)=Commit \Rightarrow f(n_i,t)=Commit</span>, thus
               <span class="katex">\scriptsize f(n_i,t)=Commit \Leftrightarrow f(n_j,t)=Commit</span>, for
               <span class="katex">\scriptsize i \ne j = 0</span>.
-              <p><strong>Case 2:</strong>
-                <span class="katex">\footnotesize j \ne i = 0</span> (
-                <span class="katex">\footnotesize n_i</span> is coordinator,
-                <span class="katex">\footnotesize n_j</span> is subordinate)</p>
-              <p>As shown in (1), if
-                <span class="katex">\scriptsize f(n_j, t)=Commit \Rightarrow f(n_i,t)=Commit</span>, and as shown in (3)
-                if
-                <span class="katex">\scriptsize f(n_i,t)=Commit \Rightarrow f(n_j, t)=Commit</span>, thus
-                <span class="katex">\scriptsize f(n_j,t)=Commit \Leftrightarrow f(n_i,t)=Commit</span>, for
-                <span class="katex">\scriptsize j \ne i = 0</span>.</p>
-              <p><strong>Case 3:</strong>
-                <span class="katex">\footnotesize i \ne j, \quad i,j \ne 0</span> (both
-                <span class="katex">\footnotesize n_i,n_j</span> are subordinates)</p>
-              <p class="paragraph">As shown in (1), if
-                <span class="katex">\scriptsize f(n_i,t)=Commit \Rightarrow f(n_0, t)</span>, and as shown in (3) if
-                <span class="katex">\scriptsize f(n_0,t)=Commit \Rightarrow f(n_j,t)</span>. Intuitively this means that
-                WLOG if subordinate
-                <span class="katex">\scriptsize n_i</span> is in commit state, the coordinator also must be in commit state
-                and thus subordinate
-                <span class="katex">\scriptsize n_j</span> also must be in commit state. Thus
-                <span class="katex">\scriptsize f(n_j,t)=Commit \Leftrightarrow f(n_i,t)=Commit</span>, for
-                <span class="katex">\scriptsize i \ne j, \space i,j \ne 0</span>.</p>
-              <p>From cases 1,2,3 follows that
-                <span class="katex">\footnotesize f(n_i,t)=Commit \Leftrightarrow f(n_j,t)=Commit</span>. Simply put, it
-                means that if a node is in commit state, any other node also must be in commit state.</p>
+            </p>
+            <p><strong>Case 2:</strong>
+              <span class="katex">\footnotesize j \ne i = 0</span> (
+              <span class="katex">\footnotesize n_i</span> is coordinator,
+              <span class="katex">\footnotesize n_j</span> is subordinate)</p>
+            <p>As shown in (1), if
+              <span class="katex">\scriptsize f(n_j, t)=Commit \Rightarrow f(n_i,t)=Commit</span>, and as shown in (3) if
+              <span class="katex">\scriptsize f(n_i,t)=Commit \Rightarrow f(n_j, t)=Commit</span>, thus
+              <span class="katex">\scriptsize f(n_j,t)=Commit \Leftrightarrow f(n_i,t)=Commit</span>, for
+              <span class="katex">\scriptsize j \ne i = 0</span>.</p>
+            <p><strong>Case 3:</strong>
+              <span class="katex">\footnotesize i \ne j, \quad i,j \ne 0</span> (both
+              <span class="katex">\footnotesize n_i,n_j</span> are subordinates)
+            </p>
+            <p class="paragraph">As shown in (1), if
+              <span class="katex">\scriptsize f(n_i,t)=Commit \Rightarrow f(n_0, t)</span>, and as shown in (3) if
+              <span class="katex">\scriptsize f(n_0,t)=Commit \Rightarrow f(n_j,t)</span>. Intuitively this means that WLOG
+              if subordinate
+              <span class="katex">\scriptsize n_i</span> is in commit state, the coordinator also must be in commit state
+              and thus subordinate
+              <span class="katex">\scriptsize n_j</span> also must be in commit state. Thus
+              <span class="katex">\scriptsize f(n_j,t)=Commit \Leftrightarrow f(n_i,t)=Commit</span>, for
+              <span class="katex">\scriptsize i \ne j, \space i,j \ne 0</span>.
+            </p>
+            <p>From cases 1,2,3 follows that
+              <span class="katex">\footnotesize f(n_i,t)=Commit \Leftrightarrow f(n_j,t)=Commit</span>. Simply put, it means
+              that if a node is in commit state, any other node also must be in commit state.</p>
           </blockquote>
           <blockquote>
             <p><strong>(Theorem 6)</strong>
@@ -362,37 +366,43 @@
               <span class="katex">\scriptsize f(n_j,t)=Abort \Rightarrow f(n_i,t)=Abort</span>, thus
               <span class="katex">\scriptsize f(n_i,t)=Abort \Leftrightarrow f(n_j,t)=Abort</span>, for
               <span class="katex">\scriptsize i \ne j = 0</span>.
-              <p><strong>Case 2:</strong>
-                <span class="katex">\footnotesize j \ne i = 0</span> (
-                <span class="katex">\footnotesize n_i</span> is coordinator,
-                <span class="katex">\footnotesize n_j</span> is subordinate)</p>
-              <p>As shown in (2), if
-                <span class="katex">\scriptsize f(n_j, t)=Abort \Rightarrow f(n_i,t)=Abort</span>, and as shown in (4) if
-                <span class="katex">\scriptsize f(n_i,t)=Abort \Rightarrow f(n_j, t)=Abort</span>, thus
-                <span class="katex">\scriptsize f(n_j,t)=Abort \Leftrightarrow f(n_i,t)=Abort</span>, for
-                <span class="katex">\scriptsize j \ne i = 0</span>.</p>
-              <p><strong>Case 3:</strong>
-                <span class="katex">\footnotesize i \ne j, \quad i,j \ne 0</span> (both
-                <span class="katex">\footnotesize n_i,n_j</span> are subordinates)</p>
-              <p class="paragraph">As shown in (2), if
-                <span class="katex">\scriptsize f(n_i,t)=Abort \Rightarrow f(n_0, t)</span>, and as shown in (4) if
-                <span class="katex">\scriptsize f(n_0,t)=Abort \Rightarrow f(n_j,t)</span>. Intuitively this means that WLOG
-                if subordinate
-                <span class="katex">\scriptsize n_i</span> is in abort state, the coordinator also must be in abort state
-                and thus subordinate
-                <span class="katex">\scriptsize n_j</span> also must be in abort state. Thus
-                <span class="katex">\scriptsize f(n_j,t)=Abort \Leftrightarrow f(n_i,t)=Abort</span>, for
-                <span class="katex">\scriptsize i \ne j, \space i,j \ne 0</span>.</p>
-              <p>From cases 1,2,3 follows that
-                <span class="katex">\footnotesize f(n_i,t)=Abort \Leftrightarrow f(n_j,t)=Abort</span>. Simply put, it means
-                that if a node is in abort state, any other node also must be in abort state.</p>
+            </p>
+            <p><strong>Case 2:</strong>
+              <span class="katex">\footnotesize j \ne i = 0</span> (
+              <span class="katex">\footnotesize n_i</span> is coordinator,
+              <span class="katex">\footnotesize n_j</span> is subordinate)
+            </p>
+            <p>As shown in (2), if
+              <span class="katex">\scriptsize f(n_j, t)=Abort \Rightarrow f(n_i,t)=Abort</span>, and as shown in (4) if
+              <span class="katex">\scriptsize f(n_i,t)=Abort \Rightarrow f(n_j, t)=Abort</span>, thus
+              <span class="katex">\scriptsize f(n_j,t)=Abort \Leftrightarrow f(n_i,t)=Abort</span>, for
+              <span class="katex">\scriptsize j \ne i = 0</span>.
+            </p>
+            <p><strong>Case 3:</strong>
+              <span class="katex">\footnotesize i \ne j, \quad i,j \ne 0</span> (both
+              <span class="katex">\footnotesize n_i,n_j</span> are subordinates)</p>
+            <p class="paragraph">As shown in (2), if
+              <span class="katex">\scriptsize f(n_i,t)=Abort \Rightarrow f(n_0, t)</span>, and as shown in (4) if
+              <span class="katex">\scriptsize f(n_0,t)=Abort \Rightarrow f(n_j,t)</span>. Intuitively this means that WLOG
+              if subordinate
+              <span class="katex">\scriptsize n_i</span> is in abort state, the coordinator also must be in abort state and
+              thus subordinate
+              <span class="katex">\scriptsize n_j</span> also must be in abort state. Thus
+              <span class="katex">\scriptsize f(n_j,t)=Abort \Leftrightarrow f(n_i,t)=Abort</span>, for
+              <span class="katex">\scriptsize i \ne j, \space i,j \ne 0</span>.
+            </p>
+            <p>From cases 1,2,3 follows that
+              <span class="katex">\footnotesize f(n_i,t)=Abort \Leftrightarrow f(n_j,t)=Abort</span>. Simply put, it means
+              that if a node is in abort state, any other node also must be in abort state.
+            </p>
           </blockquote>
           <blockquote>
             <p><strong>(Theorem 7)</strong>
               <span class="katex">\footnotesize f(n_i,t)=f(n_j,t)</span> (all nodes have the same state, consistent state)
             </p>
             <p><strong>Proof:</strong> As shown in (5) and (6), if any node is in commit (abort) state, then any other node
-              must be in commit (abort) state. Thus</p>
+              must be in commit (abort) state. Thus
+            </p>
             <div style="text-align: center">
               <span class="katex">\large f(n_i,t)=f(n_j,t),\quad \forall i,j</span>
             </div>
@@ -407,7 +417,8 @@
               target="_blank">2pc-runtime-simulator</a> and <a href="https://github.com/alpox/uzh-2pc-benchmarks" target="_blank">uzh-2pc-benchmarks</a>.
             Both simulators produced similar results. For the results below, we only made use of the former simulator. In
             order to proceed with the simulations, we first identified the variables in the experiment. Below you will find
-            an enumeration of the identified variables:</p>
+            an enumeration of the identified variables:
+          </p>
           <ol>
             <li><span class="katex">\small t_{runtime}</span>: Runtime (time needed in order to reach the consistent state)</li>
             <li><span class="katex">\small p_{error}</span>: Error rate (propability of a subordinate failure during commit)</li>
@@ -429,7 +440,8 @@
             <span class="katex">\footnotesize \sigma</span> which denotes the standard deviation.
           </p>
           <p>For our first round of simulations, we decided to variate the error rate whilst fixing all other variables. Below
-            you can find an enumaration of all values from the fixed variables:</p>
+            you can find an enumaration of all values from the fixed variables:
+          </p>
           <ul>
             <li><span class="katex">\small n_{sub}=100</span></li>
             <li><span class="katex">\small n_{commits}=100</span></li>
@@ -597,22 +609,24 @@
             uniformly distributed failures, wouldn't be perfectly uniform. We decided to use a third-party, open source library
             which helped us produce sufficiently uniform distributed values. We made use of <a href="https://github.com/ckknight/random-js"
               target="_blank">random-js</a>, which generated uniformly distributed random values thus ensuring failures where
-            uniformly distributed as shown in Figure 16. We generated <span class="katex">\scriptsize 1'000'000</span> values in the
+            uniformly distributed as shown in Figure 16. We generated <span class="katex">\scriptsize 1'000'000</span> values
+            in the
             <span class="katex">\footnotesize [0, 1)</span> interval.
           </p>
           <h5 id="observations">Observations</h5>
-          <p class="paragraph"> From the simulations we can see some interesting patterns emerge. Most notably, we observe that the runtime follows a normal
-            distribution. We believe that the runtime follows a normal distribution due to the <a href="https://en.wikipedia.org/wiki/Central_limit_theorem"
+          <p class="paragraph"> From the simulations we can see some interesting patterns emerge. Most notably, we observe that the runtime follows
+            a normal distribution. We believe that the runtime follows a normal distribution due to the <a href="https://en.wikipedia.org/wiki/Central_limit_theorem"
               target="_blank">Central Limit Theorem</a>. The CLT states that if a sample is obtained containing a large number
             of observations, each observation being randomly generated in a way that does not depend on the values of the
             other observations, and this procedure is performed many times, the computed values of the arithmetic mean will
             be distributed according to the normal distribution. During the experiment we only had one variable, the error
-            rate.
+            rate. The error rate was randomly, uniform generated. The error rate did not depend on any other values of the
+            observations.
           </p>
           <p class="paragraph">We also observe that the arithemic mean of the runtime increases as our error rate increases, as shown in Figure
-            17. This is quite trivial since it is very intuitive that an increase in error will cause more failures in the
-            two phase commit, resulting in more delays. It is also worth mentioning, that the relationship between the error
-            rate and the arithmetic mean of the runtime, seems to be exponential. The mean runtime should approach
+            17. This is quite trivial since an increase in the error rate will cause more failures in the two phase commit,
+            resulting in more delays. It is also worth mentioning, that the relationship between the error rate and the arithmetic
+            mean of the runtime, seems to be exponential. The mean runtime should approach
             <span class="katex">\infty</span> as the error rate approaches <span class="katex">\footnotesize 1</span>.</p>
           <p class="paragraph">
             Additionaly, it seems that the standard deviation is related to the error rate as well. As shown in Figure 18, we can observe
@@ -646,6 +660,20 @@
             Figure 18: Standard deviation of the runtime <span class="katex">\small \sigma_{t_{runtime}}</span> with respect
             to the error rate <span class="katex">\footnotesize p_{error}</span>.
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
+        <div class="slim">
+          <h5 id="conclusions">Conclusions</h5>
+          <p class="paragraph">
+            From the observations we have seen that the expected runtime grows exponentially with respect to the error rate. Additionally,
+            a growing standard deviation can also result in unpredictable results during runtime and also a worse real life
+            worst-case scenario. Both bad average and worst case are quite undesirable. Thus we can agree that whilst designing
+            a two phase commit implementation, the designer should have a low error rate (high reliability) "design goal"
+            in a high priority. The costs of having low reliability are quite significant as explained above.
+          </p>
         </div>
       </div>
     </div>

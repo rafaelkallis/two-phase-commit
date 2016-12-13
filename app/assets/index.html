@@ -33,6 +33,7 @@
             <li><a href="#simulations">Simulations</a></li>
             <li><a href="#comments">Comments on simulations</a></li>
             <li><a href="#observations">Observations</a></li>
+            <li><a href="#conclusions">Conslusions</a></li>
           </ul>
           <h5 id="problem">Problem Definition</h5>
           <p class="paragraph">Unlike a transaction on a local database, a distributed transaction involves altering data on multiple databases.
@@ -619,12 +620,13 @@
             of observations, each observation being randomly generated in a way that does not depend on the values of the
             other observations, and this procedure is performed many times, the computed values of the arithmetic mean will
             be distributed according to the normal distribution. During the experiment we only had one variable, the error
-            rate.
+            rate. The error rate was randomly, uniform generated. The error rate did not depend on any other values of the
+            observations.
           </p>
           <p class="paragraph">We also observe that the arithemic mean of the runtime increases as our error rate increases, as shown in Figure
-            17. This is quite trivial since it is very intuitive that an increase in error will cause more failures in the
-            two phase commit, resulting in more delays. It is also worth mentioning, that the relationship between the error
-            rate and the arithmetic mean of the runtime, seems to be exponential. The mean runtime should approach
+            17. This is quite trivial since an increase in the error rate will cause more failures in the two phase commit,
+            resulting in more delays. It is also worth mentioning, that the relationship between the error rate and the arithmetic
+            mean of the runtime, seems to be exponential. The mean runtime should approach
             <span class="katex">\infty</span> as the error rate approaches <span class="katex">\footnotesize 1</span>.</p>
           <p class="paragraph">
             Additionaly, it seems that the standard deviation is related to the error rate as well. As shown in Figure 18, we can observe
@@ -658,6 +660,20 @@
             Figure 18: Standard deviation of the runtime <span class="katex">\small \sigma_{t_{runtime}}</span> with respect
             to the error rate <span class="katex">\footnotesize p_{error}</span>.
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
+        <div class="slim">
+          <h5 id="conclusions">Conclusions</h5>
+          <p class="paragraph">
+            From the observations we have seen that the expected runtime grows exponentially with respect to the error rate. Additionally,
+            a growing standard deviation can also result in unpredictable results during runtime and also a worse real life
+            worst-case scenario. Both bad average and worst case are quite undesirable. Thus we can agree that whilst designing
+            a two phase commit implementation, the designer should have a low error rate (high reliability) "design goal"
+            in a high priority. The costs of having low reliability are quite significant as explained above.
+          </p>
         </div>
       </div>
     </div>

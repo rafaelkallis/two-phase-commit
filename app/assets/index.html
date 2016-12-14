@@ -38,7 +38,7 @@
           <h5 id="problem">Problem Definition</h5>
           <p class="paragraph">Unlike a transaction on a local database, a distributed transaction involves altering data on multiple databases.
             Consequently, distributed transaction processing is more complicated, because the database must coordinate the
-            committing or aborting the changes in a transaction as a self-contained unit. In other words, the entire transaction
+            commitment or the abortion of the changes in a transaction as a self-contained unit. In other words, the entire transaction
             commits, or the entire transaction aborts.</p>
           <h5 id="2pc">Two Phase Commit Protocol</h5>
           <p class="paragraph">The database ensures the integrity of data in a distributed transaction using the two-phase commit mechanism. In
@@ -52,22 +52,21 @@
           <div class="box">
             <img src="./img/protocol.svg">
           </div>
-          <div class="plot-description">Figure 1: Two phase commit protocol diagram, note that an * next to the record type means that the record is forced
-            to stable storage.</div>
+          <div class="plot-description">Figure 1: Two phase commit protocol diagram, note that an * next to the record type means that the transaction state
+              is force-written to a stable storage.</div>
         </div>
         <div class="slim">
-          <p class="paragraph">We assume that each tranaction runs through a different instance of the state charts below. When the transaction
+          <p class="paragraph">We assume that each transaction is processed by both of the state charts showed below. When the transaction
             starts, the coordinator sends prepare messages to all subordinates. The coordinator awaits all subordinates to
             respond with their votes.
           </p>
-          <p class="paragraph"> If all subordinates responded with a yes vote the coordinator sends commit messages to all subordinates. If any
-            subordinate responded to the prepare message with a no or a timeout has occured, the coordinator sends abort
-            messages to all subordinates. After sending commit (abort) messages, the coordinator awaits all subordinates
+          <p class="paragraph"> If all subordinates responded with a yes vote, the coordinator sends commit messages to all subordinates. If any
+            subordinate responded to the prepare message with a "no" message or if a timeout occurred, the coordinator sends abort
+            messages to all subordinates. After sending the "commit" or "abort" messages, the coordinator awaits all subordinates
             to respond with an ack message.
           </p>
-          <p class="paragraph"> If a timeout occurres while waiting, the coordinator retransmitts the commit (abort) message to the respective
-            subordinate. The transaction ends when all subordinates have responded with an ack message to the coordinator's
-            commit (abort) message.</p>
+          <p class="paragraph"> If a timeout occurs while waiting, the coordinator retransmits the "commit" or "abort" message to the respective
+            subordinate. The transaction ends when all subordinates responded with an ack message.</p>
         </div>
       </div>
     </div>
@@ -227,7 +226,7 @@
           </div>
           <div>
             Let
-            <span class="katex">\footnotesize n_i\in N, \quad i \ne 0</span> denote any subordinate.
+            <span class="katex">\footnotesize n_i\in N, \quad i \in N^{+}</span> denote any subordinate.
           </div>
           <div>
             Let
@@ -254,36 +253,36 @@
           </div>
           <h5 id="proof">Consistent state during two phase commit</h5>
           <p class="paragraph">
-            The coordinator <span class="katex">\footnotesize n_0</span> knows in which state he is in case of a failure,
+            The coordinator <span class="katex">\footnotesize n_0</span> knows in which state it is in case of a failure,
             since the two phase commit protocol dictates the coordinator to keep a log.
           </p>
           <blockquote>
             <p><strong>(Theorem 1)</strong>
-              <span class="katex">\footnotesize f(n_i,t)=Commit \Rightarrow f(n_0,t)=Commit, i\ne 0</span> (If a subordinate
+              <span class="katex">\footnotesize f(n_i,t)=Commit \Rightarrow f(n_0,t)=Commit, i \in N^{+}</span> (If a subordinate
               is in commit state, the coordinator must also be in commit state)
             </p>
             <p class="paragraph"><strong>Proof:</strong> In order for subordinate
               <span class="katex">\footnotesize n_i</span> to be in commit state, the coordinator
               <span class="katex">\footnotesize n_0</span> must have entered the commit state before
-              <span class="katex">\footnotesize n_i</span> and then sent a commit message to
+              <span class="katex">\footnotesize n_i</span> and sent a commit message to
               <span class="katex">\footnotesize n_i</span>. It is impossible for the coordinator to send a commit message,
-              if he is not in the commit state.</p>
+              if it is not in the commit state.</p>
           </blockquote>
           <blockquote>
             <p><strong>(Theorem 2)</strong>
-              <span class="katex">\footnotesize f(n_i,t)=Abort \Rightarrow f(n_0,t)=Abort, i\ne 0</span> (If a subordinate
+              <span class="katex">\footnotesize f(n_i,t)=Abort \Rightarrow f(n_0,t)=Abort, i \in N^{+}</span> (If a subordinate
               is in abort state, the coordinator must also be in abort state)
             </p>
             <p class="paragraph"><strong>Proof:</strong> (Analogus to 1) In order for subordinate
               <span class="katex">\footnotesize n_i</span> to be in abort state, the coordinator
               <span class="katex">\footnotesize n_0</span> must have entered the abort state before
-              <span class="katex">\footnotesize n_i</span> and then sent an abort message to
+              <span class="katex">\footnotesize n_i</span> and sent an abort message to
               <span class="katex">\footnotesize n_i</span>. It is impossible for the coordinator to send an abort message,
-              if he is not in the abort state.</p>
+              if it is not in the abort state.</p>
           </blockquote>
           <blockquote>
             <p><strong>(Theorem 3)</strong>
-              <span class="katex">\footnotesize f(n_0,t)=Commit \Rightarrow f(n_i,t)=Commit, i \ne 0</span> (If the coordinator
+              <span class="katex">\footnotesize f(n_0,t)=Commit \Rightarrow f(n_i,t)=Commit, i \in N^{+}</span> (If the coordinator
               is in commit state, all subordinates must also be in commit state)
             </p>
             <p class="paragraph"><strong>Proof:</strong> If the coordinator
@@ -296,7 +295,7 @@
           </blockquote>
           <blockquote>
             <p><strong>(Theorem 4)</strong>
-              <span class="katex">\footnotesize f(n_0,t)=Abort \Rightarrow f(n_i,t)=Abort, i \ne 0</span> (If the coordinator
+              <span class="katex">\footnotesize f(n_0,t)=Abort \Rightarrow f(n_i,t)=Abort, i \in N^{+}</span> (If the coordinator
               is in abort state, all subordinates must also be in abort state)
             </p>
             <p class="paragraph"><strong>Proof:</strong> (Analogus to 3) If the coordinator
@@ -630,7 +629,7 @@
             <span class="katex">\infty</span> as the error rate approaches <span class="katex">\footnotesize 1</span>.</p>
           <p class="paragraph">
             Additionaly, it seems that the standard deviation is related to the error rate as well. As shown in Figure 18, we can observe
-            that as the error rate increases, the standard deviation also does. An higher chance of failure will result in
+            that as the error rate increases, the standard deviation also does. A higher chance of failure will result in
             a bigger variation of results, assuming failures are uniformly distributed. We can also imagine it in a different
             approach. Let's imagine simple coin tosses. More coin tosses will result in a bigger possible variation of results.
             The relationship of the two variables seems to be exponential. The standard deviation should approach
@@ -673,6 +672,10 @@
             worst-case scenario. Both bad average and worst case are quite undesirable. Thus we can agree that whilst designing
             a two phase commit implementation, the designer should have a low error rate (high reliability) "design goal"
             in a high priority. The costs of having low reliability are quite significant as explained above.
+          </p>
+          <p class="paragraph">
+            For completion, we want to mention, that polling the subordinates in case of a timeout, as assumed in this document,
+            is only one way to deal with non-responding subordinates. But these are out of scope of our research.
           </p>
         </div>
       </div>

@@ -4,7 +4,6 @@
 import { PREPARE, COMMIT, ABORT, YES, NO, ACK, TIMEOUT, BUG_NO, BUG_TIMEOUT } from './constants';
 import { PrepareNoVoteError, SubordinateNotActiveError } from './errors';
 import { Observable } from './observable';
-import { Promise } from 'bluebird';
 
 export class Subordinate extends Observable {
     constructor(id) {

@@ -6,8 +6,8 @@ import { Notification } from './notification';
 import { Explosion } from './explosion';
 
 document.addEventListener('DOMContentLoaded', () => {
-  Promise.each(Array.from(document.getElementsByClassName('katex')), element => Katex.render(element.innerHTML, element));
-  document.getElementById('start-transaction-button').addEventListener('click', () => start_transaction());
+    renderMathInElement(document.body, { delimiters: [ {left: "$", right: "$", display: false} ] });
+    document.getElementById('start-transaction-button').addEventListener('click', () => start_transaction());
     window.onkeydown = (event) => event.keyCode == 13 && start_transaction();
 
     let delay_value = document.getElementById('duration-value');

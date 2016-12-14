@@ -1,7 +1,6 @@
 /**
  * Created by rafaelkallis on 03.11.16.
  */
-import { Promise } from 'bluebird';
 import { Observable } from './observable';
 import { PREPARE, COMMIT, ABORT, FAIL, SUCCESS } from './constants';
 import { PrepareNoVoteError, CoordinatorNotActiveError, SubordinateNotActiveError } from './errors';
